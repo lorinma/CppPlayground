@@ -8,8 +8,8 @@ Permission is granted to anyone to use this software for any purpose,
 including commercial applications, and to alter it and redistribute it freely, 
 subject to the following restrictions:
 
-1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acjnowledgment in the product documentation would be appreciated but is not required.
+2. Altered source versions must be plainly marjed as such, and must not be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
 
@@ -39,13 +39,13 @@ typedef SimpleWeb::Client<SimpleWeb::HTTP> HttpClient;
 
 /// This is a Hello World program for running a basic Bullet physics simulation
 
-// struct   Bullet2ContactResultCallback : public btCollisionWorld::ContactResultCallback
+// struct   Bullet2ContactResultCallbacj : public btCollisionWorld::ContactResultCallbacj
 // {
 //     int m_numContacts;
 //     lwContactPoint* m_pointsOut;
 //     int m_pointCapacity;
 
-//     Bullet2ContactResultCallback(lwContactPoint* pointsOut, int pointCapacity) :
+//     Bullet2ContactResultCallbacj(lwContactPoint* pointsOut, int pointCapacity) :
 //             m_numContacts(0),
 //             m_pointsOut(pointsOut),
 //             m_pointCapacity(pointCapacity)
@@ -75,29 +75,6 @@ typedef SimpleWeb::Client<SimpleWeb::HTTP> HttpClient;
 
 int main(int argc, char** argv)
 {
-	//Client examples
-    HttpClient client("restfulifc-lorinma.c9users.io");
-    auto r1=client.request("GET", "/entity/element");
-    std::ostringstream oss;
-    oss << r1->content.rdbuf();
-    std::string str=oss.str();
-    const char* json=str.c_str();
-
-    Document document;
-    document.Parse(json);
-    const Value& items = document["_items"];
-    for (SizeType i = 0; i < items.Size(); i++){
-        const Value& Vertices=items[i]["Geometry"]["Vertices"];
-        for (SizeType j = 0; j < Vertices.Size(); j++){
-            cout<<Vertices[j].GetDouble()<<endl;
-        }
-        const Value& Faces=items[i]["Geometry"]["Faces"];
-        for (SizeType j = 0; j < Faces.Size(); j++){
-            cout<<Faces[j].GetInt()<<endl;
-        }
-        // Uses SizeType instead of size_t
-    } // Uses SizeType instead of size_t
-    
 	///-----includes_end-----
 
 	// int i;
@@ -118,160 +95,209 @@ int main(int argc, char** argv)
 //    Bullet Collision Detection can also be used without the Dynamics/Extras.
     btCollisionWorld* world = new btCollisionWorld(dispatcher,overlappingPairCache,collisionConfiguration);
 
-	//keep track of the shapes, we release memory at exit.
-	//make sure to re-use collision shapes among rigid bodies whenever possible!
+	//jeep tracj of the shapes, we release memory at exit.
+	//maje sure to re-use collision shapes among rigid bodies whenever possible!
 // 	btAlignedObjectArray<btCollisionShape*> collisionShapes;
 
 
-    btVector3 quad1[] = {
-            btVector3(2445,   0,1900),
-            btVector3(2445, 200,1900),
-            btVector3(2445, 200,-200),
-            btVector3(2445,   0,1900),
-            btVector3(2445, 200,-200),
-            btVector3(2445,   0,-200),
-            btVector3(2445,   0,1900),
-            btVector3(2445,   0,-200),
-            btVector3(2545,   0,-200),
-            btVector3(2545,   0,1900),
-            btVector3(2445,   0,1900),
-            btVector3(2545,   0,-200),
-            btVector3(2545, 200,1900),
-            btVector3(2545,   0,1900),
-            btVector3(2545,   0,-200),
-            btVector3(2545, 200,1900),
-            btVector3(2545,   0,-200),
-            btVector3(2545, 200,-200),
-            btVector3(2545, 200,1900),
-            btVector3(2545, 200,-200),
-            btVector3(2445, 200,-200),
-            btVector3(2445, 200,1900),
-            btVector3(2545, 200,1900),
-            btVector3(2445, 200,-200),
-            btVector3(2545, 200,-200),
-            btVector3(2545,   0,-200),
-            btVector3(2445,   0,-200),
-            btVector3(2445, 200,-200),
-            btVector3(2545, 200,-200),
-            btVector3(2445,   0,-200),
-            btVector3(2445,   0,1900),
-            btVector3(2545,   0,1900),
-            btVector3(2545, 200,1900),
-            btVector3(2445,   0,1900),
-            btVector3(2545, 200,1900),
-            btVector3(2445, 200,1900)};
-    btTriangleMesh* mesh1 = new btTriangleMesh();
-    int len1=(sizeof(quad1)/sizeof(*quad1));
-    for(int i=0;i<len1;i+=3){
-        mesh1->addTriangle(quad1[i+0],quad1[i+1],quad1[i+2],true);
-    }
-    btBvhTriangleMeshShape* trimesh1 = new btBvhTriangleMeshShape(mesh1,true,true);
-    btCollisionObject* o1 = new btCollisionObject();
-    o1->setCollisionShape(trimesh1);
+	//Client examples
+    HttpClient client("restfulifc-lorinma.c9users.io");
+    auto r1=client.request("GET", "/entity/element");
+    std::ostringstream oss;
+    oss << r1->content.rdbuf();
+    std::string str=oss.str();
+    const char* json=str.c_str();
+
+    Document document;
+    document.Parse(json);
+    const Value& items = document["_items"];
+    for (SizeType i = 0; i < items.Size(); i++){
+        const Value& Vertices=items[i]["Geometry"]["Vertices"];
+        double V_array [Vertices.Size()];
+        for (SizeType j = 0; j < Vertices.Size(); j++){
+            V_array[j]=Vertices[j].GetDouble();
+            // cout<<V_array[j]<<endl;
+        }
+        
+        const Value& Faces=items[i]["Geometry"]["Faces"];
+        int Face_Point_Size = Faces.Size();
+        int F_array [Face_Point_Size];
+        for (SizeType j = 0; j < Faces.Size(); j++){
+            F_array[j]=Faces[j].GetInt();
+        }
+        
+        btVector3 quad [Face_Point_Size];
+        for (int j=0; j<Face_Point_Size; j++){
+            quad[j]=btVector3(V_array[F_array[j]*3+0],V_array[F_array[j]*3+1],V_array[F_array[j]*3+2]);
+            // cout<<F_array[j*3+0]<<","<<F_array[j*3+1]<<","<<F_array[j*3+2]<<endl;
+            // cout<<quad[j].x()<<","<<quad[j].y()<<","<<quad[j].z()<<endl;
+        }
+        
+        btTriangleMesh* mesh = new btTriangleMesh();
+        for(int j=0;j<Face_Point_Size;j+=3){
+            mesh->addTriangle(quad[j+0],quad[j+1],quad[j+2],true);
+        }
+        btBvhTriangleMeshShape* trimesh = new btBvhTriangleMeshShape(mesh,true,true);
+        btCollisionObject* o = new btCollisionObject();
+        o->setCollisionShape(trimesh);
+        
+        btVector3 min = trimesh->getLocalAabbMin();
+        btVector3 max = trimesh->getLocalAabbMax();
+        
+        cout<<"min: "<<min.x()<<","<<min.y()<<","<<min.z()<<", max: "<<max.x()<<","<<max.y()<<","<<max.z()<<endl;
+        
+        // Uses SizeType instead of size_t
+    } // Uses SizeType instead of size_t
     
-    btVector3 quad2[] = {
-            btVector3(2845, 50,1600),
-            btVector3(2545, 50,1600),
-            btVector3(2545, 50,1400),
-            btVector3(2845, 50,1400),
-            btVector3(2845, 50,1600),
-            btVector3(2545, 50,1400),
-            btVector3(2845, 50,1400),
-            btVector3(2545, 50,1400),
-            btVector3(2545,150,1400),
-            btVector3(2845,150,1400),
-            btVector3(2845, 50,1400),
-            btVector3(2545,150,1400),
-            btVector3(2845,150,1400),
-            btVector3(2545,150,1400),
-            btVector3(2545,150,1600),
-            btVector3(2845,150,1600),
-            btVector3(2845,150,1400),
-            btVector3(2545,150,1600),
-            btVector3(2845,150,1600),
-            btVector3(2545,150,1600),
-            btVector3(2545, 50,1600),
-            btVector3(2845, 50,1600),
-            btVector3(2845,150,1600),
-            btVector3(2545, 50,1600),
-            btVector3(2545,150,1600),
-            btVector3(2545, 50,1400),
-            btVector3(2545, 50,1600),
-            btVector3(2545,150,1600),
-            btVector3(2545,150,1400),
-            btVector3(2545, 50,1400),
-            btVector3(2845, 50,1600),
-            btVector3(2845, 50,1400),
-            btVector3(2845,150,1600),
-            btVector3(2845, 50,1400),
-            btVector3(2845,150,1400),
-            btVector3(2845,150,1600),
-            btVector3(2445, 50,1600),
-            btVector3(   0, 50,1600),
-            btVector3(   0, 50,1400),
-            btVector3(2445, 50,1400),
-            btVector3(2445, 50,1600),
-            btVector3(   0, 50,1400),
-            btVector3(2445,150,1400),
-            btVector3(2445, 50,1400),
-            btVector3(   0, 50,1400),
-            btVector3(2445,150,1400),
-            btVector3(   0, 50,1400),
-            btVector3(   0,150,1400),
-            btVector3(2445,150,1400),
-            btVector3(   0,150,1400),
-            btVector3(   0,150,1600),
-            btVector3(2445,150,1600),
-            btVector3(2445,150,1400),
-            btVector3(   0,150,1600),
-            btVector3(2445, 50,1600),
-            btVector3(2445,150,1600),
-            btVector3(   0,150,1600),
-            btVector3(2445, 50,1600),
-            btVector3(   0,150,1600),
-            btVector3(   0, 50,1600),
-            btVector3(   0,150,1400),
-            btVector3(   0, 50,1400),
-            btVector3(   0, 50,1600),
-            btVector3(   0,150,1400),
-            btVector3(   0, 50,1600),
-            btVector3(   0,150,1600),
-            btVector3(2445, 50,1600),
-            btVector3(2445, 50,1400),
-            btVector3(2445,150,1400),
-            btVector3(2445,150,1600),
-            btVector3(2445, 50,1600),
-            btVector3(2445,150,1400)};
-    btTriangleMesh* mesh2 = new btTriangleMesh();
-    int len2=(sizeof(quad2)/sizeof(*quad2));
-    for(int i=0;i<len2;i+=3){
-        mesh2->addTriangle(quad2[i+0],quad2[i+1],quad2[i+2],true);
-    }
-    btBvhTriangleMeshShape* trimesh2 = new btBvhTriangleMeshShape(mesh2,true,true);
-    btCollisionObject* o2 = new btCollisionObject();
-    o2->setCollisionShape(trimesh2);
+    // btVector3 quad1[] = {
+    //         btVector3(2445,   0,1900),
+    //         btVector3(2445, 200,1900),
+    //         btVector3(2445, 200,-200),
+    //         btVector3(2445,   0,1900),
+    //         btVector3(2445, 200,-200),
+    //         btVector3(2445,   0,-200),
+    //         btVector3(2445,   0,1900),
+    //         btVector3(2445,   0,-200),
+    //         btVector3(2545,   0,-200),
+    //         btVector3(2545,   0,1900),
+    //         btVector3(2445,   0,1900),
+    //         btVector3(2545,   0,-200),
+    //         btVector3(2545, 200,1900),
+    //         btVector3(2545,   0,1900),
+    //         btVector3(2545,   0,-200),
+    //         btVector3(2545, 200,1900),
+    //         btVector3(2545,   0,-200),
+    //         btVector3(2545, 200,-200),
+    //         btVector3(2545, 200,1900),
+    //         btVector3(2545, 200,-200),
+    //         btVector3(2445, 200,-200),
+    //         btVector3(2445, 200,1900),
+    //         btVector3(2545, 200,1900),
+    //         btVector3(2445, 200,-200),
+    //         btVector3(2545, 200,-200),
+    //         btVector3(2545,   0,-200),
+    //         btVector3(2445,   0,-200),
+    //         btVector3(2445, 200,-200),
+    //         btVector3(2545, 200,-200),
+    //         btVector3(2445,   0,-200),
+    //         btVector3(2445,   0,1900),
+    //         btVector3(2545,   0,1900),
+    //         btVector3(2545, 200,1900),
+    //         btVector3(2445,   0,1900),
+    //         btVector3(2545, 200,1900),
+    //         btVector3(2445, 200,1900)};
+    // btTriangleMesh* mesh1 = new btTriangleMesh();
+    // int len1=(sizeof(quad1)/sizeof(*quad1));
+    // for(int i=0;i<len1;i+=3){
+    //     mesh1->addTriangle(quad1[i+0],quad1[i+1],quad1[i+2],true);
+    // }
+//     btBvhTriangleMeshShape* trimesh1 = new btBvhTriangleMeshShape(mesh1,true,true);
+//     btCollisionObject* o1 = new btCollisionObject();
+//     o1->setCollisionShape(trimesh1);
     
-    struct   MyContactResultCallback : public btCollisionWorld::ContactResultCallback
-				{
-					bool m_connected;
-					btScalar m_margin;
-					MyContactResultCallback() :m_connected(true),m_margin(0.05)
-					{
-					}
-					virtual   btScalar   addSingleResult(btManifoldPoint& cp,   const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1)
-					{
-					    cout<<cp.getDistance()<<endl;
-						if (cp.getDistance()<=m_margin)
-							m_connected = true;
-						return 1.f;
-					}
-			   };
-	MyContactResultCallback result;
-    world->contactPairTest(o1,o2,result);
-    if (result.m_connected)
-    {
-        cout<<"contact"<<endl;
-    }
+//     btVector3 quad2[] = {
+//             btVector3(2845, 50,1600),
+//             btVector3(2545, 50,1600),
+//             btVector3(2545, 50,1400),
+//             btVector3(2845, 50,1400),
+//             btVector3(2845, 50,1600),
+//             btVector3(2545, 50,1400),
+//             btVector3(2845, 50,1400),
+//             btVector3(2545, 50,1400),
+//             btVector3(2545,150,1400),
+//             btVector3(2845,150,1400),
+//             btVector3(2845, 50,1400),
+//             btVector3(2545,150,1400),
+//             btVector3(2845,150,1400),
+//             btVector3(2545,150,1400),
+//             btVector3(2545,150,1600),
+//             btVector3(2845,150,1600),
+//             btVector3(2845,150,1400),
+//             btVector3(2545,150,1600),
+//             btVector3(2845,150,1600),
+//             btVector3(2545,150,1600),
+//             btVector3(2545, 50,1600),
+//             btVector3(2845, 50,1600),
+//             btVector3(2845,150,1600),
+//             btVector3(2545, 50,1600),
+//             btVector3(2545,150,1600),
+//             btVector3(2545, 50,1400),
+//             btVector3(2545, 50,1600),
+//             btVector3(2545,150,1600),
+//             btVector3(2545,150,1400),
+//             btVector3(2545, 50,1400),
+//             btVector3(2845, 50,1600),
+//             btVector3(2845, 50,1400),
+//             btVector3(2845,150,1600),
+//             btVector3(2845, 50,1400),
+//             btVector3(2845,150,1400),
+//             btVector3(2845,150,1600),
+//             btVector3(2445, 50,1600),
+//             btVector3(   0, 50,1600),
+//             btVector3(   0, 50,1400),
+//             btVector3(2445, 50,1400),
+//             btVector3(2445, 50,1600),
+//             btVector3(   0, 50,1400),
+//             btVector3(2445,150,1400),
+//             btVector3(2445, 50,1400),
+//             btVector3(   0, 50,1400),
+//             btVector3(2445,150,1400),
+//             btVector3(   0, 50,1400),
+//             btVector3(   0,150,1400),
+//             btVector3(2445,150,1400),
+//             btVector3(   0,150,1400),
+//             btVector3(   0,150,1600),
+//             btVector3(2445,150,1600),
+//             btVector3(2445,150,1400),
+//             btVector3(   0,150,1600),
+//             btVector3(2445, 50,1600),
+//             btVector3(2445,150,1600),
+//             btVector3(   0,150,1600),
+//             btVector3(2445, 50,1600),
+//             btVector3(   0,150,1600),
+//             btVector3(   0, 50,1600),
+//             btVector3(   0,150,1400),
+//             btVector3(   0, 50,1400),
+//             btVector3(   0, 50,1600),
+//             btVector3(   0,150,1400),
+//             btVector3(   0, 50,1600),
+//             btVector3(   0,150,1600),
+//             btVector3(2445, 50,1600),
+//             btVector3(2445, 50,1400),
+//             btVector3(2445,150,1400),
+//             btVector3(2445,150,1600),
+//             btVector3(2445, 50,1600),
+//             btVector3(2445,150,1400)};
+//     btTriangleMesh* mesh2 = new btTriangleMesh();
+//     int len2=(sizeof(quad2)/sizeof(*quad2));
+//     for(int i=0;i<len2;i+=3){
+//         mesh2->addTriangle(quad2[i+0],quad2[i+1],quad2[i+2],true);
+//     }
+//     btBvhTriangleMeshShape* trimesh2 = new btBvhTriangleMeshShape(mesh2,true,true);
+//     btCollisionObject* o2 = new btCollisionObject();
+//     o2->setCollisionShape(trimesh2);
+    
+//     struct   MyContactResultCallbacj : public btCollisionWorld::ContactResultCallbacj
+// 				{
+// 					bool m_connected;
+// 					btScalar m_margin;
+// 					MyContactResultCallbacj() :m_connected(true),m_margin(0.05)
+// 					{
+// 					}
+// 					virtual   btScalar   addSingleResult(btManifoldPoint& cp,   const btCollisionObjectWrapper* colObj0Wrap,int partId0,int index0,const btCollisionObjectWrapper* colObj1Wrap,int partId1,int index1)
+// 					{
+// 					    cout<<cp.getDistance()<<endl;
+// 						if (cp.getDistance()<=m_margin)
+// 							m_connected = true;
+// 						return 1.f;
+// 					}
+// 			   };
+// 	MyContactResultCallbacj result;
+//     world->contactPairTest(o1,o2,result);
+//     if (result.m_connected)
+//     {
+//         cout<<"contact"<<endl;
+//     }
     
     // btTransform t;
     // btVector3 min,max,o;
@@ -285,6 +311,6 @@ int main(int argc, char** argv)
     // cout<<max.x()<<","<<max.y()<<","<<max.z()<<endl;
     
     
-    // callback?
+    // callbacj?
 }
 
