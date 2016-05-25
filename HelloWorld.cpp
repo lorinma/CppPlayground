@@ -114,7 +114,7 @@ int main(int argc, char** argv)
     for (SizeType i = 0; i < items.Size(); i++){
         const Value& Vertices=items[i]["Geometry"]["Vertices"];
         double V_array [Vertices.Size()];
-        for (SizeType j = 0; j < Vertices.Size(); j++){
+        for (SizeType j = 0; j < Vertices.Size(); j++){ // Uses SizeType instead of size_t
             V_array[j]=Vertices[j].GetDouble();
             // cout<<V_array[j]<<endl;
         }
@@ -141,141 +141,25 @@ int main(int argc, char** argv)
         btCollisionObject* o = new btCollisionObject();
         o->setCollisionShape(trimesh);
         
-        btVector3 min = trimesh->getLocalAabbMin();
-        btVector3 max = trimesh->getLocalAabbMax();
+        world->addCollisionObject(o);
         
-        cout<<"min: "<<min.x()<<","<<min.y()<<","<<min.z()<<", max: "<<max.x()<<","<<max.y()<<","<<max.z()<<endl;
+        // btVector3 min = trimesh->getLocalAabbMin();
+        // btVector3 max = trimesh->getLocalAabbMax();
         
-        // Uses SizeType instead of size_t
-    } // Uses SizeType instead of size_t
+        // cout<<"min: "<<min.x()<<","<<min.y()<<","<<min.z()<<", max: "<<max.x()<<","<<max.y()<<","<<max.z()<<endl;
+        
+    } 
     
-    // btVector3 quad1[] = {
-    //         btVector3(2445,   0,1900),
-    //         btVector3(2445, 200,1900),
-    //         btVector3(2445, 200,-200),
-    //         btVector3(2445,   0,1900),
-    //         btVector3(2445, 200,-200),
-    //         btVector3(2445,   0,-200),
-    //         btVector3(2445,   0,1900),
-    //         btVector3(2445,   0,-200),
-    //         btVector3(2545,   0,-200),
-    //         btVector3(2545,   0,1900),
-    //         btVector3(2445,   0,1900),
-    //         btVector3(2545,   0,-200),
-    //         btVector3(2545, 200,1900),
-    //         btVector3(2545,   0,1900),
-    //         btVector3(2545,   0,-200),
-    //         btVector3(2545, 200,1900),
-    //         btVector3(2545,   0,-200),
-    //         btVector3(2545, 200,-200),
-    //         btVector3(2545, 200,1900),
-    //         btVector3(2545, 200,-200),
-    //         btVector3(2445, 200,-200),
-    //         btVector3(2445, 200,1900),
-    //         btVector3(2545, 200,1900),
-    //         btVector3(2445, 200,-200),
-    //         btVector3(2545, 200,-200),
-    //         btVector3(2545,   0,-200),
-    //         btVector3(2445,   0,-200),
-    //         btVector3(2445, 200,-200),
-    //         btVector3(2545, 200,-200),
-    //         btVector3(2445,   0,-200),
-    //         btVector3(2445,   0,1900),
-    //         btVector3(2545,   0,1900),
-    //         btVector3(2545, 200,1900),
-    //         btVector3(2445,   0,1900),
-    //         btVector3(2545, 200,1900),
-    //         btVector3(2445, 200,1900)};
-    // btTriangleMesh* mesh1 = new btTriangleMesh();
-    // int len1=(sizeof(quad1)/sizeof(*quad1));
-    // for(int i=0;i<len1;i+=3){
-    //     mesh1->addTriangle(quad1[i+0],quad1[i+1],quad1[i+2],true);
-    // }
-//     btBvhTriangleMeshShape* trimesh1 = new btBvhTriangleMeshShape(mesh1,true,true);
-//     btCollisionObject* o1 = new btCollisionObject();
-//     o1->setCollisionShape(trimesh1);
+    btCollisionObject* o = new btCollisionObject();
+    o = world->getCollisionObjectArray()[0];
+    btCollisionShape* shape = o->getCollisionShape ();
+    if(shape->isConcave())
+        cout<<"yes"<<endl;
+        
+    // this can perform broadphase collision detection?
+    // world->performDiscreteCollisionDetection();
+    // cout<<world->getCollisionObjectArray().size()<<endl;
     
-//     btVector3 quad2[] = {
-//             btVector3(2845, 50,1600),
-//             btVector3(2545, 50,1600),
-//             btVector3(2545, 50,1400),
-//             btVector3(2845, 50,1400),
-//             btVector3(2845, 50,1600),
-//             btVector3(2545, 50,1400),
-//             btVector3(2845, 50,1400),
-//             btVector3(2545, 50,1400),
-//             btVector3(2545,150,1400),
-//             btVector3(2845,150,1400),
-//             btVector3(2845, 50,1400),
-//             btVector3(2545,150,1400),
-//             btVector3(2845,150,1400),
-//             btVector3(2545,150,1400),
-//             btVector3(2545,150,1600),
-//             btVector3(2845,150,1600),
-//             btVector3(2845,150,1400),
-//             btVector3(2545,150,1600),
-//             btVector3(2845,150,1600),
-//             btVector3(2545,150,1600),
-//             btVector3(2545, 50,1600),
-//             btVector3(2845, 50,1600),
-//             btVector3(2845,150,1600),
-//             btVector3(2545, 50,1600),
-//             btVector3(2545,150,1600),
-//             btVector3(2545, 50,1400),
-//             btVector3(2545, 50,1600),
-//             btVector3(2545,150,1600),
-//             btVector3(2545,150,1400),
-//             btVector3(2545, 50,1400),
-//             btVector3(2845, 50,1600),
-//             btVector3(2845, 50,1400),
-//             btVector3(2845,150,1600),
-//             btVector3(2845, 50,1400),
-//             btVector3(2845,150,1400),
-//             btVector3(2845,150,1600),
-//             btVector3(2445, 50,1600),
-//             btVector3(   0, 50,1600),
-//             btVector3(   0, 50,1400),
-//             btVector3(2445, 50,1400),
-//             btVector3(2445, 50,1600),
-//             btVector3(   0, 50,1400),
-//             btVector3(2445,150,1400),
-//             btVector3(2445, 50,1400),
-//             btVector3(   0, 50,1400),
-//             btVector3(2445,150,1400),
-//             btVector3(   0, 50,1400),
-//             btVector3(   0,150,1400),
-//             btVector3(2445,150,1400),
-//             btVector3(   0,150,1400),
-//             btVector3(   0,150,1600),
-//             btVector3(2445,150,1600),
-//             btVector3(2445,150,1400),
-//             btVector3(   0,150,1600),
-//             btVector3(2445, 50,1600),
-//             btVector3(2445,150,1600),
-//             btVector3(   0,150,1600),
-//             btVector3(2445, 50,1600),
-//             btVector3(   0,150,1600),
-//             btVector3(   0, 50,1600),
-//             btVector3(   0,150,1400),
-//             btVector3(   0, 50,1400),
-//             btVector3(   0, 50,1600),
-//             btVector3(   0,150,1400),
-//             btVector3(   0, 50,1600),
-//             btVector3(   0,150,1600),
-//             btVector3(2445, 50,1600),
-//             btVector3(2445, 50,1400),
-//             btVector3(2445,150,1400),
-//             btVector3(2445,150,1600),
-//             btVector3(2445, 50,1600),
-//             btVector3(2445,150,1400)};
-//     btTriangleMesh* mesh2 = new btTriangleMesh();
-//     int len2=(sizeof(quad2)/sizeof(*quad2));
-//     for(int i=0;i<len2;i+=3){
-//         mesh2->addTriangle(quad2[i+0],quad2[i+1],quad2[i+2],true);
-//     }
-//     btBvhTriangleMeshShape* trimesh2 = new btBvhTriangleMeshShape(mesh2,true,true);
-//     btCollisionObject* o2 = new btCollisionObject();
-//     o2->setCollisionShape(trimesh2);
     
 //     struct   MyContactResultCallbacj : public btCollisionWorld::ContactResultCallbacj
 // 				{
