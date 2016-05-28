@@ -102,7 +102,7 @@ int main(int argc, char** argv)
 
 	//Client examples
     HttpClient client("restfulifc-lorinma.c9users.io");
-    auto r1=client.request("GET", "/entity/element");
+    auto r1=client.request("GET", "/element");
     std::ostringstream oss;
     oss << r1->content.rdbuf();
     std::string str=oss.str();

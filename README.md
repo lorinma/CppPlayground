@@ -11,7 +11,7 @@ https://github.com/bulletphysics/bullet3
 https://github.com/miloyip/rapidjson
 
 
-conda config -- add channels lorinma
+conda config --add channels lorinma
 
 conda install rapidjson bullet3
 
