@@ -19,4 +19,5 @@ LINK_LIBRARIES(
  BulletDynamics BulletCollision LinearMath
 )
 add_executable(hello HelloWorld.cpp)
+message(${Boost_LIBRARIES})
 target_link_libraries(hello ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
