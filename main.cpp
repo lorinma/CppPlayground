@@ -19,27 +19,27 @@ int main(int argc, char** argv)
     Document document;
     document.Parse(json);
     const Value& items = document["_items"];
-    
-    cout<<"number of shapes: "<<items.Size()<<endl;
-    
-	///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
-	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-    	
-	///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-	btCollisionDispatcher* dispatcher = new	btCollisionDispatcher(collisionConfiguration);
 
-	///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
+//    cout<<"number of shapes: "<<items.Size()<<endl;
+
+    ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
+    btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+
+    ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
+    btCollisionDispatcher* dispatcher = new	btCollisionDispatcher(collisionConfiguration);
+
+    ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
+    btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
 
     //Bullet Collision Detection can also be used without the Dynamics/Extras.
     btCollisionWorld* world = new btCollisionWorld(dispatcher,overlappingPairCache,collisionConfiguration);
 
-	//keep tracj of the shapes, we release memory at exit.
-	//maje sure to re-use collision shapes among rigid bodies whenever possible!
+    //keep tracj of the shapes, we release memory at exit.
+    //maje sure to re-use collision shapes among rigid bodies whenever possible!
     btAlignedObjectArray<btCollisionShape*> collisionShapes;
 
     for (SizeType i = 0; i < items.Size(); i++){
-        cout<<"guid: " << items[i]["GlobalId"].GetString()<<endl;
+//        cout<<"guid: " << items[i]["GlobalId"].GetString()<<endl;
         // get all the vertices from seebim-api
         const Value& Vertices=items[i]["Geometry"]["Vertices"];
         double V_array [Vertices.Size()][3];
@@ -74,52 +74,80 @@ int main(int argc, char** argv)
     }
     // this can perform broadphase collision detection?
     world->performDiscreteCollisionDetection();
-    cout<<world->getCollisionObjectArray().size()<<endl;
+//    cout<<world->getCollisionObjectArray().size()<<endl;
 
     struct MyContactResultCallback : public btCollisionWorld::ContactResultCallback{
-		bool m_connected;
-		btScalar m_margin;
-		MyContactResultCallback() :m_connected(false),m_margin(0.05){
-		}
-		virtual btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1){
-			if (cp.getDistance()<=m_margin)
-			    m_connected = true;
-			return 1.f;
-		}
-	};
-			   
+        bool m_connected;
+        btScalar m_margin;
+        MyContactResultCallback() :m_connected(false),m_margin(0.05){
+            cout<<"test performed orignin"<<endl;
+        }
+        virtual btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1){
+            if (cp.getDistance()<=m_margin)
+                m_connected = true;
+            cout<<"test performed"<<endl;
+            return 1.f;
+        }
+    };
+
+
     MyContactResultCallback result;
-    world->contactPairTest(world->getCollisionObjectArray()[9],world->getCollisionObjectArray()[15],result);
-	if (result.m_connected){
-	    cout<<"connected"<<endl;
-// 		btConnection tmp;
-// 		tmp.m_childIndex0 = i;
-// 		tmp.m_childIndex1 = j;
-// 		tmp.m_childShape0 = compound->getChildShape(i);
-// 		tmp.m_childShape1 = compound->getChildShape(j);
-// 		tmp.m_strength = 1.f;//??
-// 		m_connections.push_back(tmp);
-	}
-	else{
-	    cout<<"no touch"<<endl;
-	}
-    // world->getCollisionObjectArray();
-    // collisionShapes = world->getCollisionObjectArray();
-    
-    //delete world
-	delete world;
+
+//    struct MyContactsResultCallback : public btCollisionWorld::ContactResultCallback{
+//        bool m_connected;
+//        btScalar m_margin;
+//        MyContactsResultCallback() :m_connected(false),m_margin(0.05){
+//            cout<<"test performed orignin"<<endl;
+//        }
+//        virtual btScalar addSingleResult(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0, const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1){
+//            cout<<"test performed"<<endl;
+//            if (cp.getDistance()<=m_margin)
+//                m_connected = true;
+//            return 1.f;
+//        }
+//    };
+//    MyContactsResultCallback testResult;
+    for(int i=0;i<items.Size();i++){
+//        world->contactTest(world->getCollisionObjectArray()[i],testResult);
+        for(int j=i+1;j<items.Size();j++){
+//            btCollisionObject t=*(world->getCollisionObjectArray()[i]);
+////            cout<<t<<endl;
+            world->contactPairTest(world->getCollisionObjectArray()[i],world->getCollisionObjectArray()[i],result);
+//            cout<<"OL"<<endl;
+//////            world->contactTest()
+            if (result.m_connected) {
+                cout << "connected" << endl;
+            }
+//// 		btConnection tmp;
+//// 		tmp.m_childIndex0 = i;
+//// 		tmp.m_childIndex1 = j;
+//// 		tmp.m_childShape0 = compound->getChildShape(i);
+//// 		tmp.m_childShape1 = compound->getChildShape(j);
+//// 		tmp.m_strength = 1.f;//??
+//// 		m_connections.push_back(tmp);
+        }
+//            else{
+//                cout<<"no touch"<<endl;
+//            }
+    }
+//}
+// world->getCollisionObjectArray();
+// collisionShapes = world->getCollisionObjectArray();
+
+//delete world
+    delete world;
 
 // 	//delete solver
 // 	delete solver;
 
-	//delete broadphase
-	delete overlappingPairCache;
+//delete broadphase
+    delete overlappingPairCache;
 
-	//delete dispatcher
-	delete dispatcher;
+//delete dispatcher
+    delete dispatcher;
 
-	delete collisionConfiguration;
+    delete collisionConfiguration;
 
-	//next line is optional: it will be cleared by the destructor when the array goes out of scope
-	collisionShapes.clear();
+//next line is optional: it will be cleared by the destructor when the array goes out of scope
+//	collisionShapes.clear();
 }
